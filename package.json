@@ -19,6 +19,7 @@
 	],
 	"main" : "lib/main/kaffee/cli.js",
 	"directories" : {
+		"src" : "./src",
 		"lib" : "./lib/main/kaffee",
 		"bin" : "./bin"
 	},

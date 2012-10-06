@@ -30,7 +30,6 @@ class Main
     		}]}
   
 		goals = []
-		bar = null
 
 		Commander.version(Configuration.VERSION).usage(Configuration.NAME + " [options] [goal(s)]")
 		Commander.option "-w, --workspace <path>", "Changes the working directory.", "."
