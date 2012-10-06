@@ -68,6 +68,7 @@ class Plugin
 		try
 			# Modify path.
 			module.paths.push Path.join this.project.getConfiguration().getWorkspace().getPath(), "node_modules"
+			module.paths = process.mainModule.paths.concat module.paths
 			obj = require this.name
 			throw "Plugin " + name + " is invalid." if typeof obj != 'function' 
 			obj.apply this, [this.configuration]
