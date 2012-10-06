@@ -17,6 +17,11 @@ class Result
 	  The child {@link Result}s of this {@link Result}.
 	###
 	childs: []
+	
+	###
+	  The logs of this {@link Result}.
+	###
+	logs: []
 
 	### 
 	  Constructs a new {@link Result} instance.
@@ -27,7 +32,17 @@ class Result
 	###
 	constructor: (project) ->
 		this.project = project
+		this.childs = []
+		this.logs = []
 		this
+		
+	###
+	  Returns the {@link LogEvent}s of this {@link Result} instance.
+	  
+	  @since 0.3.0
+	  @return The {@link LogEvent}s of this {@link Result} instance.
+	###
+	getLogs: -> this.logs
 
 	###
 	  Returns the {@link Project} of this {@link ProjectResult} instance.

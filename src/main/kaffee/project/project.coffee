@@ -174,11 +174,12 @@ class Project
 	  @return The {@link ExecutionResult} instance.
 	###
 	execute: (request) ->
+		result = new Result this
 		try 
 			for goal in request.getGoals()
-				this.attainGoal goal
+				result.addChild this.attainGoal(goal)
 			for child in this.childs
-				child.execute request
+				result.addChild child.execute(request)
 		catch e
 			this.event.getLogger().error e
 			return

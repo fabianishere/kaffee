@@ -1,6 +1,7 @@
 # Copyright (c) 2012 Fabian M.
 # See the AUTHORS file for all contributors of the Kaffee project.
 EventManager = require '../event/manager'
+Result = require '../execution/result'
 ###
   A {@link Goal} instance represents a Kaffee goal.
 
@@ -98,11 +99,15 @@ class Goal
 	  @return The result.
 	###
 	attain: (request) -> 
+		result = new Result this.getProject()
 		this.event.fire "attain", this
+		this.event.on "*log", (log) -> result.getLogs().push log
 		try
 			throw "Invalid Goal" if not this.call
-			this.call.apply this, request
+			msg = this.call.apply this, request
+			result.setMessage msg
 		catch e
 			this.logger.error e
-		this.event.fire "attained", this
+		this.event.fire "attained", this, result
+		result
 module.exports = Goal
