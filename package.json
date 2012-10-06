@@ -1,0 +1,53 @@
+{
+	"name": "kaffee",
+	"description": "Kaffee is a software project management tool similar to Maven that adds more flavor to your application. Kaffee allows you to compile, test, minify and many other tasks to make building your application simple and fun again.",
+	"version": "0.3.0",
+	"author": "Fabian M. <mail.fabianm@gmail.com> (https://www.github.com/FabianM)",
+	"homepage": "http://github.com/FabianM/kaffee",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/FabianM/kaffee"
+	},
+	"bugs": {
+		"url" : "http://github.com/FabianM/kaffee/issues"
+	},
+	"licenses": [
+		{
+			"type": "Apache License, Version 2.0",
+			"url": "http://github.com/FabianM/kaffee/blob/master/LICENSE"
+		}
+	],
+	"main": "lib/main/kaffee/kaffee.js",
+	"scripts": {
+	},
+	"engines": {
+		"node": ">= 0.6.0"
+	},
+	"keywords": [
+		"kaffee",
+		"coffee",
+		"build",
+		"maven",
+		"project management",
+		"software project",
+		"tool",
+		"test",
+		"software project management tool",
+		"minify",
+		"plugin",
+		"make",
+		"cake",
+		"bake",
+		"project",
+		"package",
+		"npm",
+		"package.json"
+	],
+	"dependencies" : {
+		"kaffee-plugin" : "latest",
+		"kaffee-coffeemaker" : "latest"
+	},
+	"kaffee" : {
+		"archtype" : "kaffee-coffeemaker"
+	}
+}
