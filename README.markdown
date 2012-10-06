@@ -46,4 +46,4 @@ Compiling Coffeescript projects is not problem for Kaffee. Use the above configu
 
     kaffee compile
     
-This will compile all files in the `src/main` and `src/test` to the `lib/main` and `lib/test` folder.
+This will compile all files in the `src/main` and `src/test` into the `lib/main` and `lib/test` folder.
