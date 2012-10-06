@@ -1,0 +1,4 @@
+#!/bin/sh
+# Copyright (c) 2012 Fabian M.
+# See the AUTHORS file for all contributors of the Kaffee project.
+exec node "`dirname $0`/../lib/main/kaffee/cli.js" "$@"

@@ -1,0 +1,59 @@
+{
+	"name": "kaffee-cli",
+	"description": "Command line interface for the Kaffee library.",
+	"version": "0.3.0",
+	"author": "Fabian M. <mail.fabianm@gmail.com> (https://www.github.com/FabianM)",
+	"homepage": "http://github.com/FabianM/kaffee",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/FabianM/kaffee"
+	},
+	"bugs": {
+		"url" : "http://github.com/FabianM/kaffee/issues"
+	},
+	"licenses": [
+		{
+			"type": "Apache License, Version 2.0",
+			"url": "http://github.com/FabianM/kaffee/blob/master/LICENSE"
+		}
+	],
+	"main" : "lib/main/kaffee/cli.js",
+	"bin" : "bin/kaffee",
+	"engines": {
+		"node": ">= 0.6.0"
+	},
+	"preferGlobal": true,
+	"keywords": [
+		"kaffee",
+		"coffee",
+		"build",
+		"maven",
+		"project management",
+		"software project",
+		"tool",
+		"test",
+		"software project management tool",
+		"minify",
+		"coffeescript",
+		"plugin",
+		"make",
+		"cake",
+		"bake",
+		"project",
+		"package",
+		"npm",
+		"simple",
+		"easy",
+		"fun",
+		"package.json"
+	],
+	"dependencies" : {
+		"winston" : "latest",
+		"commander" : "latest",
+		"kaffee" : "latest",
+		"kaffee-coffeemaker" : "latest"
+	},
+	"kaffee" : {
+		"archtype" : "kaffee-coffeemaker"
+	}
+}
