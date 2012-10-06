@@ -18,7 +18,13 @@
 		}
 	],
 	"main" : "lib/main/kaffee/cli.js",
-	"bin" : "bin/kaffee",
+	"directories" : {
+		"lib" : "./lib/main/kaffee",
+		"bin" : "./bin"
+	},
+	"bin" : {
+		"kaffee" : "./bin/kaffee"
+	},
 	"engines": {
 		"node": ">= 0.6.0"
 	},
