@@ -96,7 +96,8 @@ class Configuration
 					"kaffee-coffeemaker" : {}
 				},
 				lifecycles: {
-					"compile" : ["kaffee-coffeemaker:compile"]
+					"compile" : ["kaffee-coffeemaker:compile"],
+					"test" : ["kaffee-coffeemaker:test"]
 				}
 			}
 		})
