@@ -1,7 +1,7 @@
 {
 	"name": "kaffee-cli",
 	"description": "Command line interface for the Kaffee library.",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"author": "Fabian M. <mail.fabianm@gmail.com> (https://www.github.com/FabianM)",
 	"homepage": "http://github.com/FabianM/kaffee",
 	"repository": {
@@ -57,7 +57,9 @@
 	"dependencies" : {
 		"winston" : "latest",
 		"commander" : "latest",
-		"kaffee" : "latest",
+		"kaffee" : "latest"
+	},
+	"devDependencies" : {
 		"kaffee-coffeemaker" : "latest"
 	},
 	"kaffee" : {
