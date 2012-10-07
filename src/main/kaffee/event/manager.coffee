@@ -92,6 +92,7 @@ class EventManager
 			DEBUG : { name : 'debug', value : 1},
 			INFO : { name : 'info', value : 0 }
 		}
+		
 
 		###
 		  Logs a {@link LogEvent}.
@@ -108,8 +109,8 @@ class EventManager
 		  @since 0.3.0
 		  @param message The message to log.
 		###
-		this.error = (message) -> 
-			event = new LogEvent(manager, this.Level.ERROR, message)
+		this.error = (message) ->  
+			event = new LogEvent(manager, this.Level.ERROR, message, null, arguments.callee)
 			this.log event
 			manager.fire "#{ manager.getName() }:error", message
 
@@ -120,7 +121,7 @@ class EventManager
 		  @param message The message to log.
 		###
 		this.warn = (message) -> 
-			event = new LogEvent(manager, this.Level.WARN, message)
+			event = new LogEvent(manager, this.Level.WARN, message, null, arguments.callee)
 			this.log event
 			manager.fire "#{ manager.getName() }:warn", message
 
@@ -131,7 +132,7 @@ class EventManager
 		  @param message The message to log.
 		###
 		this.debug = (message) -> 
-			this.log new LogEvent(manager, this.Level.DEBUG, message)
+			this.log new LogEvent(manager, this.Level.DEBUG, message, null, arguments.callee)
 			manager.fire "#{ manager.getName() }:debug", message
 
 		###
@@ -141,7 +142,7 @@ class EventManager
 		  @param message The message to log.
 		###
 		this.info = (message) -> 
-			this.log new LogEvent(manager, this.Level.INFO, message)
+			this.log new LogEvent(manager, this.Level.INFO, message, null, arguments.callee)
 			manager.fire "#{ manager.getName() }:info", message
 		this
 	) this

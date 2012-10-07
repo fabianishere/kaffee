@@ -27,7 +27,7 @@ class LogEvent
 	###
 	  The stacktrace of this {@link LogEvent}.
 	###
-	stack: []
+	stack: null
 
 	###
 	  The {@link EventManager} of this {@link LogEvent}.
@@ -42,14 +42,19 @@ class LogEvent
 	  @param level The level of this {@link LogEvent}.
 	  @param message The message of this {@link LogEvent}.
 	  @param stack The stacktrace.
+	  @param callee The arguments.callee variable to provide more accurate stacktraces.
 	###
-	constructor: (manager, level, message, stack = null) ->
+	constructor: (manager, level, message, stack = null, callee = null) ->
 		this.manager = manager
 		this.level = level
 		this.message = message
 		this.time = Date.now()
-		this.stack = message.stack if message.stack
-		this.stack = stack if stack
+		this.stack = message.stack || stack
+		if not this.stack
+			err = new Error this.message
+			err.name = ""
+			Error.captureStackTrace(err, callee || arguments.callee);
+			this.stack = err.stack
 	###
 	  Returns the {@link EventManager} of this {@link LogEvent}.
 
