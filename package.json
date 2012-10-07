@@ -1,7 +1,7 @@
 {
 	"name": "kaffee-coffeemaker",
 	"description": "The kaffee-coffeemaker plugin compiles Coffeescript files into Javascript.",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"author": "Fabian M. <mail.fabianm@gmail.com> (https://www.github.com/FabianM)",
 	"homepage": "http://github.com/FabianM/kaffee-coffeemaker",
 	"repository": {

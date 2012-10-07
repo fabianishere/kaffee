@@ -1,7 +1,5 @@
-# Copyright (c) 2012 Fabian M.
-# See the AUTHORS file for all contributors of the Kaffee project.
-Path = require "path"
 Fs = require "fs"
+Path = require "path"
 
 CoffeeScript = require "coffee-script"
 ###
@@ -21,7 +19,7 @@ module.exports = ->
   		try
   			Fs.mkdirSync path
   		catch e
-      			if e.errno == 34
+      			if e.errno is 34
       				mkdir Path.dirname(path)
       				mkdir path
 	###
@@ -54,13 +52,13 @@ module.exports = ->
 				if stats.isDirectory()
 					test.call this, file
 					continue
-				CoffeeScript.compile Fs.readFileSync(file, 'UTF-8') if Path.extname(file) == ".coffee"
+				CoffeeScript.compile Fs.readFileSync(file, 'UTF-8') if Path.extname(file) is ".coffee"
 			catch e
 				ok = false
 				e.message += " in #{ file }"
 				this.logger.error e
 		ok
-			
+		
 	###
 	  Compiles all Coffeescript files in the given directory.
 
@@ -70,19 +68,20 @@ module.exports = ->
 	  @param output The path to the output directory.
 	###
 	compile = (path, output) ->
-		return if not test.call this, path	
+		return unless test.call this, path	
 		files = getFiles path
-		mkdir output if !Fs.existsSync(output) && files.length > 0
+		mkdir output unless Fs.existsSync(output) and files.length > 0
 		for file, i in getFiles(path)
 			try 	
 				this.logger.info file
 				stats = Fs.lstatSync file
 				compile.call this, file, Path.join(output, Path.basename(file)) if stats.isDirectory()
-				if Path.extname(file) == ".coffee"
+				if Path.extname(file) is ".coffee"
 					fd = Fs.openSync Path.join(output, Path.basename(file, ".coffee") + ".js"), "w"					
 					out = CoffeeScript.compile Fs.readFileSync(file, 'UTF-8')
 					Fs.writeSync fd, out, 0, out.length
 			catch e
+				e.message += " in #{ file }"
 				this.logger.error e
 			
 
@@ -91,7 +90,7 @@ module.exports = ->
 	###
 	this.register "compile", ->
 		structure = this.getProject().getConfiguration().getKaffeeConfiguration().getStructure()
-		return this.logger.warn "No structure" if not structure
+		return this.logger.warn "No structure" unless structure
 		this.logger.info "Compiling files for project #{ this.getProject().getConfiguration().getName() }"
 		compile.call this, structure.get('src'), structure.get('bin')
 		compile.call this, structure.get('src-test'), structure.get('bin-test')
@@ -100,8 +99,8 @@ module.exports = ->
 	###
 	this.register "test", ->
 		structure = this.getProject().getConfiguration().getKaffeeConfiguration().getStructure()
-		return this.logger.warn "No structure" if not structure
+		return this.logger.warn "No structure" unless structure
 		this.logger.info "Testing files for project #{ this.getProject().getConfiguration().getName() }"
-		ok = !(!test.call(this, structure.get('src')) || !test.call(this, structure.get('src-test')))
+		ok = not (not test.call(this, structure.get('src')) or not test.call(this, structure.get('src-test')))
 		if ok then this.logger.info "Test passed!" else this.logger.warn "Test failed!"
 		
