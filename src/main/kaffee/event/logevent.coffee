@@ -48,6 +48,7 @@ class LogEvent
 		this.manager = manager
 		this.level = level
 		this.message = message
+		this.message = message.message if message instanceof Error
 		this.time = Date.now()
 		this.stack = message.stack || stack
 		if not this.stack
