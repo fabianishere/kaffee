@@ -55,11 +55,11 @@ class Cli
 		project.getEventManager().on "attain", (goal) ->
 			console.log ">> Running goal \"#{ goal.getPlugin().getName() }:#{ goal.getName() }\""
 		project.getEventManager().on "attained", (goal, result) ->
-			errors = (log for log in result.getLogs() when log.getLevel().value == 3)
+			errors = (log for log in result.getLogs() when log.getLevel().value >= 3)
 			warnings = (log for log in result.getLogs() when log.getLevel().value == 2)
 			console.log ">> Finished with #{ errors.length } error(s) and #{ warnings.length } warning(s)"
 		project.getEventManager().on "*log", (log) ->
-			return logger.log log.getLevel().name, log.getStack() if log.hasStack()
+			return logger.error log.getStack() if log.getLevel().value >= 3
 			logger.log log.getLevel().name, log.getMessage()
 		return if not project.load()
 		result = project.execute new Request(goals, Commander.force)
