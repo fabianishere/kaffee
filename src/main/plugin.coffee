@@ -1,9 +1,9 @@
 # Copyright (c) 2012 Fabian M.
 # See the AUTHORS file for all contributors of the Kaffee project.
-CoffeeScript = require "coffee-script"
 Path = require "path"
 Fs = require "fs"
 
+CoffeeScript = require "coffee-script"
 ###
   The kaffee-coffeemaker plugins compiles Coffeescript files into Javascript files.
   
@@ -50,11 +50,14 @@ module.exports = ->
 		ok = true
 		for file in getFiles(path)
 			try 
+				stats = Fs.lstatSync file
+				if stats.isDirectory()
+					test.call this, file
+					continue
 				CoffeeScript.compile Fs.readFileSync(file, 'UTF-8') if Path.extname(file) == ".coffee"
 			catch e
 				ok = false
-				e.fileName = file
-				this.logger.info "#{ file }:"
+				e.message += " in #{ file }"
 				this.logger.error e
 		ok
 			
@@ -92,4 +95,13 @@ module.exports = ->
 		this.logger.info "Compiling files for project #{ this.getProject().getConfiguration().getName() }"
 		compile.call this, structure.get('src'), structure.get('bin')
 		compile.call this, structure.get('src-test'), structure.get('bin-test')
+	###
+	  Tests Coffeescript files.
+	###
+	this.register "test", ->
+		structure = this.getProject().getConfiguration().getKaffeeConfiguration().getStructure()
+		return this.logger.warn "No structure" if not structure
+		this.logger.info "Testing files for project #{ this.getProject().getConfiguration().getName() }"
+		ok = !(!test.call(this, structure.get('src')) || !test.call(this, structure.get('src-test')))
+		if ok then this.logger.info "Test passed!" else this.logger.warn "Test failed!"
 		
