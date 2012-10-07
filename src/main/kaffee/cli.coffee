@@ -16,7 +16,7 @@ Request = Kaffee.execution.Request
   @version 0.3.0
   @author Fabian M. <mail.fabianm@gmail.com>
 ###
-class Main
+class Cli
 
 	###
 	  Runs Kaffee using command line arguments.
@@ -63,4 +63,4 @@ class Main
 			logger.log log.getLevel().name, log.getMessage()
 		return if not project.load()
 		result = project.execute new Request(goals, Commander.force)
-module.exports = Main.run process.argv
+module.exports = Cli
