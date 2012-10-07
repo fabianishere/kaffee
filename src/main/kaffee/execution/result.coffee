@@ -1,27 +1,9 @@
-# Copyright (c) 2012 Fabian M.
-# See the AUTHORS file for all contributors of the Kaffee project.
 ###
   A {@link Result} instance contains the result of a executed {@link Goal}
 
-  @version 0.3.0
   @author Fabian M. <mail.fabianm@gmail.com>
 ###
 class Result
-	
-	###
-	  The {@link Project} of this {@link Result} instance.
-	###
-	project: null
-
-	###
-	  The child {@link Result}s of this {@link Result}.
-	###
-	childs: []
-	
-	###
-	  The logs of this {@link Result}.
-	###
-	logs: []
 
 	### 
 	  Constructs a new {@link Result} instance.
@@ -30,11 +12,9 @@ class Result
 	  @param project The {@link Project} of this {@link Result}.
 	  @param parent The parent {@link Result} of this {@link Result}.
 	###
-	constructor: (project) ->
-		this.project = project
+	constructor: (@project) ->
 		this.childs = []
 		this.logs = []
-		this
 		
 	###
 	  Returns the {@link LogEvent}s of this {@link Result} instance.
@@ -77,9 +57,7 @@ class Result
 	  @since 0.2.1
 	  @param message The message to set.
 	###
-	setMessage: (message) ->
-		return this.message if not message
-		this.message = message
+	setMessage: (@message) ->
 
 	###
 	  Returns the result message of this {@link Result} instance.

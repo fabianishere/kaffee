@@ -1,5 +1,3 @@
-# Copyright (c) 2012 Fabian M.
-# See the AUTHORS file for all contributors of the Kaffee project.
 ProjectConfiguration = require './configuration'
 Workspace = require './workspace'
 Plugin = require '../plugin/plugin'
@@ -10,35 +8,9 @@ Configuration = require '../configuration'
 ###
   The {@link Project} class represents a Kaffee project.
 
-  @version 0.3.0
   @author Fabian M. <mail.fabianm@gmail.com>
 ###
 class Project
-	
-	###
-	  The {@link Plugin}s of this {@link Project} instance.
-	###
-	plugins: []
-
-	###
-	  The parent {@link Project} of this {@link Project}.
-	###
-	parent: null
-
-	###
-	  The child {@link Project}s of this {@link Project}.
-	###
-	childs: []
-
-	###
-	  The {@link ProjectConfiguration} of this {@link Project}.
-	###
-	configuration: null
-
-	###
-	  The {@link EventManager} of this {@link Project}.
-	###
-	event: null
 
 	###
 	  Constructs a new {@link Project} instance.
@@ -47,14 +19,12 @@ class Project
 	  @param configuration The {@link ProjectConfiguration} of this project.
 	  @param parent The parent {@link Project} of this {@link Project}.
 	###
-	constructor: (configuration, parent = null) ->	
+	constructor: (@configuration, @parent) ->	
 		this.plugins = []
 		this.childs = []
 		
 		this.event = new EventManager "project", null, this
-		this.event.setParent parent.getEventManager() if parent
-		this.parent = parent
-		this.configuration = configuration
+		this.event.setParent parent?.getEventManager()
 		this.event.setName "project-" + this.configuration.getName()
 		
 	###
@@ -74,15 +44,15 @@ class Project
 		this.event.fire "enter", this
 		try
 			for child in this.configuration.getKaffeeConfiguration().getModules()
-				continue if typeof child != 'string'
+				continue if typeof child isnt 'string'
 				workspace = new Workspace child
-				continue if workspace.getPath() == this.configuration.getWorkspace().getPath()
-				project = new Project(new ProjectConfiguration(workspace), this)
+				continue if workspace.getPath() is this.configuration.getWorkspace().getPath()
+				project = new Project new ProjectConfiguration(workspace), this
 				project.load()
-				this.addChild project
+				this.childs.push project
 			for name, configuration of this.configuration.getKaffeeConfiguration().getPlugins()
 					plugin = new Plugin name, this, configuration
-					return if !plugin.load()
+					return unless plugin.load()
 					this.plugins.push plugin 
 		catch e
 			this.event.getLogger().error e
@@ -120,9 +90,7 @@ class Project
 	  @param name The name of the {@link Plugin} to get.
 	  @return The {@link Plugin}.
 	###
-	getPlugin: (name) ->
-		for plugin in this.getPlugins()
-			return plugin if plugin.getName() == name
+	getPlugin: (name) -> return plugin for plugin in this.getPlugins() when plugin.getName() is name
 			
 	###
 	  Determines if this {@link Plugin} has a {@link Goal}.
@@ -139,9 +107,8 @@ class Project
 	  @return The lifecycles of this {@link Plugin}.
 	###
 	getLifecycles: -> 
-		c = {}
-		# Copy object
-		c[key] = value for key, value of this.getParent().getLifecycles() if this.getParent()
+		c = this.getParent()?.getLifecycles()?.slice(0)
+		c or= []
 		for key, value of this.getConfiguration().getKaffeeConfiguration().getLifecycles()
 			c[key] = value
 		c
@@ -157,16 +124,6 @@ class Project
 	getChilds: -> this.childs
 
 	###
-	  Adds a child {@link Project} to this {@link Project}.
-
-	  @since 0.3.0
-	  @param project The {@link Project} to add.
-	###
-	addChild: (child) ->
-		return this.childs = this.childs.concat child if typeof child == 'array'
-		return this.childs.push child if child
-
-	###
 	  Executes a {@link ExecutionRequest}.
 
 	  @since 0.1.1
@@ -176,10 +133,8 @@ class Project
 	execute: (request) ->
 		result = new Result this
 		try 
-			for goal in request.getGoals()
-				result.addChild this.attainGoal(goal)
-			for child in this.childs
-				result.addChild child.execute(request)
+			result.addChild this.attainGoal(goal) for goal in request.getGoals()
+			result.addChild child.execute(request) for child in this.childs
 		catch e
 			this.event.getLogger().error e
 			return
@@ -209,6 +164,6 @@ class Project
 		if not lifecycle
 			this.event.getLogger().error "Unknown lifecycle \"#{ name }\""
 			return
-		this.attainGoal goal if goal != name for goal in lifecycle
+		this.attainGoal goal for goal in lifecycle when goal isnt name
 
 module.exports = Project	

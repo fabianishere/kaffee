@@ -1,33 +1,10 @@
-# Copyright (c) 2012 Fabian M.
-# See the AUTHORS file for all contributors of the Kaffee project.
 LogEvent = require './logevent'
 ###
   The {@link EventManager} class manages events fired by Kaffee.
 
-  @since 0.3.0
   @author Fabian M. <mail.fabianm@gmail.com>
 ###
 class EventManager
-	###
-	  The name of this {@link EventManager}.
-	###
-	name: null
-
-	###
-	  An attachment object.
-	###
-	attachment: null
-
-	###
-	  The parent {@link EventManager}. of this {@link EventManager}.
-	###
-	parent: null
-
-	###
-	  The events of this {@link EventManager}.
-	###
-	events: {}
-	
 	###	
 	  Constructs a new {@link EventManager} instance.
 			
@@ -36,11 +13,7 @@ class EventManager
 	  @param parent The parent {@link EventManager} instance.
 	  @param attachment An attachment object.
 	###
-	constructor: (name, parent, attachment) -> 
-		this.name = name
-		this.parent = parent
-		this.attachment = attachment
-		this.events = {}
+	constructor: (@name, @parent, @attachment) -> this.events = {}
 	###
 	  Sets the name of this {@link EventManager}.
 
@@ -86,13 +59,19 @@ class EventManager
 
 	  	  @since 0.3.0
 		###
-		this.Level = {
-			ERROR : { name : 'error', value : 3},
-			WARN : { name : 'warn', value : 2},
-			DEBUG : { name : 'debug', value : 1},
-			INFO : { name : 'info', value : 0 }
-		}
-		
+		this.Level = 
+			ERROR: 
+				name: 'error'
+				value: 3
+			WARN: 
+				name: 'warn'
+				value: 2
+			DEBUG: 
+				name: 'debug'
+				value: 1
+			INFO: 
+				name: 'info'
+				value: 0 
 
 		###
 		  Logs a {@link LogEvent}.
@@ -110,9 +89,9 @@ class EventManager
 		  @param message The message to log.
 		###
 		this.error = (message) ->  
-			event = new LogEvent(manager, this.Level.ERROR, message, null, arguments.callee)
+			event = new LogEvent manager, this.Level.ERROR, message, null, arguments.callee
 			this.log event
-			manager.fire "#{ manager.getName() }:error", message
+			manager.fire "#{ manager.getName() }:error", event
 
 		###
 		  Logs a {@link Level#WARN} message.
@@ -121,9 +100,9 @@ class EventManager
 		  @param message The message to log.
 		###
 		this.warn = (message) -> 
-			event = new LogEvent(manager, this.Level.WARN, message, null, arguments.callee)
+			event = new LogEvent manager, this.Level.WARN, message, null, arguments.callee
 			this.log event
-			manager.fire "#{ manager.getName() }:warn", message
+			manager.fire "#{ manager.getName() }:warn", event
 
 		###
 		  Logs a {@link Level#DEBUG} message.
@@ -132,8 +111,9 @@ class EventManager
 		  @param message The message to log.
 		###
 		this.debug = (message) -> 
-			this.log new LogEvent(manager, this.Level.DEBUG, message, null, arguments.callee)
-			manager.fire "#{ manager.getName() }:debug", message
+			event = new LogEvent manager, this.Level.DEBUG, message, null, arguments.callee
+			this.log event
+			manager.fire "#{ manager.getName() }:debug", event
 
 		###
 		  Logs a {@link Level#INFO} message.
@@ -141,9 +121,10 @@ class EventManager
 		  @since 0.3.0
 		  @param message The message to log.
 		###
-		this.info = (message) -> 
-			this.log new LogEvent(manager, this.Level.INFO, message, null, arguments.callee)
-			manager.fire "#{ manager.getName() }:info", message
+		this.info = (message) ->
+			event = new LogEvent manager, this.Level.INFO, message, null, arguments.callee 
+			this.log event
+			manager.fire "#{ manager.getName() }:info", event
 		this
 	) this
 			
@@ -161,7 +142,7 @@ class EventManager
 	  @since 0.3.0
 	  @param parent The parent {@link EventManager} to set.
 	###
-	setParent: (parent) -> this.parent = parent
+	setParent: (@parent) ->
 
 	###
 	  Returns the events of this {@link EventManager}.
@@ -174,6 +155,7 @@ class EventManager
 	###
 	  Returns the listeners of an event of this {@link EventManager}.
 
+	  @
 	  @since 0.3.0
 	  @param name The name of the event.
 	  @return The listeners of an event of this {@link EventManager}.
@@ -193,8 +175,7 @@ class EventManager
 	  @param str The string.
 	  @return The RegEx.
 	###
-	getRegex: (str) ->
-		new RegExp "^" + str.replace(new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"), "\\$&").replace("\\*", ".*").replace("\\?", ".") + "$"
+	getRegex: (str) -> new RegExp "^" + str.replace(new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"), "\\$&").replace("\\*", ".*").replace("\\?", ".") + "$"
 
 	###
 	  Adds a listener to this {@link EventManager}.
@@ -227,10 +208,8 @@ class EventManager
 	  @param name The name of the event to fire.
 	  @param args The arguments.
 	###
-	fire: (name) ->
+	fire: (name, args...) ->
 		return false if not name
-		args = Array.prototype.slice.call arguments
-		args.shift()
-		listener.apply null, args for listener in this.getListeners(name)
-		this.parent.fire.apply this.parent, Array.prototype.slice.call(arguments) if this.parent
+		listener.apply null, args for listener in this.getListeners name
+		this.parent.fire.apply this.parent, [name].concat(args) if this.parent
 module.exports = EventManager

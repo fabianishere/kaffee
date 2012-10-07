@@ -1,24 +1,9 @@
-# Copyright (c) 2012 Fabian M.
-# See the AUTHORS file for all contributors of the Kaffee project.
-
 ###
   The {@link ExecutionRequest} class is a request to execute one or multiple goals.
 
-  @version 0.3.0
   @author Fabian M. <mail.fabianm@gmail.com>
 ###
 class ExecutionRequest
-
-	###
-	  Goals to be executed.
-	###
-	goals: {}
-	
-	###
-	  Should be true if you force Kaffee, which is usually not a good thing.
-	###
-	force: false
-
 	###
 	  Constructs a new {@link ExecutionRequest}.
 
@@ -26,10 +11,8 @@ class ExecutionRequest
 	  @param goals The names of the goals to execute.
 	  @param force Force Kaffee to do something.
 	###
-	constructor: (goals = [], force = false) -> 
-		this.goals = goals
-		this.force = force
-
+	constructor: (@goals = [], @force = false) -> 
+	
 	###
 	  Adds a goal to this {@link ExecutionRequest}.
 
@@ -55,8 +38,8 @@ class ExecutionRequest
 	  @since 0.2.1
 	  @param force The force field to set.
 	###
-	setForce: (force) -> this.force = force if force
-
+	setForce: (@force) -> 
+	
 	###
 	  Determines if Kaffee is forced or not.
 

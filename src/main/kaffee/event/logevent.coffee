@@ -1,39 +1,10 @@
-# Copyright (c) 2012 Fabian M.
-# See the AUTHORS file for all contributors of the Kaffee project.
-
 ###
   A {@link LogEvent} instance represents a Kaffee log message.
 
-  @version 0.3.0
   @author Fabian M. <mail.fabianm@gmail.com>
 ###
 class LogEvent
 
-	###
-	  The message of this {@link LogEvent}.
-	###
-	message: ""
-
-	###
-	  The level of this {@link LogEvent}.
-	###
-	level: null
-
-	###
-	  The time of this {@link LogEvent}.
-	###
-	time: 0
-
-	###
-	  The stacktrace of this {@link LogEvent}.
-	###
-	stack: null
-
-	###
-	  The {@link EventManager} of this {@link LogEvent}.
-	###
-	manager: null
-	
 	###
 	  Constructs a new {@link LogEvent}.
 
@@ -44,18 +15,15 @@ class LogEvent
 	  @param stack The stacktrace.
 	  @param callee The arguments.callee variable to provide more accurate stacktraces.
 	###
-	constructor: (manager, level, message, stack = null, callee = null) ->
-		this.manager = manager
-		this.level = level
-		this.message = message
+	constructor: (@manager, @level, @message = "", @stack = "", callee = null) ->
 		this.message = message.message if message instanceof Error
-		this.time = Date.now()
-		this.stack = message.stack || stack
-		if not this.stack
+		this.stack ||= message.stack if message
+		unless this.stack
 			err = new Error this.message
 			err.name = ""
 			Error.captureStackTrace(err, callee || arguments.callee);
 			this.stack = err.stack
+		this.time = Date.now()
 	###
 	  Returns the {@link EventManager} of this {@link LogEvent}.
 
@@ -96,9 +64,7 @@ class LogEvent
 	  @since 0.3.0
 	  @param level The level to set.
 	###
-	setLevel: (level) -> 
-		this.level = level
-		this
+	setLevel: (@level) -> this
 
 	###
 	  Returns the time in milliseconds of this {@link LogEvent}.
@@ -114,9 +80,7 @@ class LogEvent
 	  @since 0.3.0
 	  @param time The time to set.
 	###
-	setTime: (time) -> 
-		this.time = time
-		this
+	setTime: (@time) -> this.time = time
 
 	###
 	  Determines if this {@link LogEvent} has a stack or not.
@@ -140,8 +104,6 @@ class LogEvent
 	  @since 0.3.0
 	  @param stack The stack to set.
 	###
-	setStack: (stack) -> 
-		this.stack = stack
-		this
+	setStack: (@stack) -> this
 
 module.exports = LogEvent

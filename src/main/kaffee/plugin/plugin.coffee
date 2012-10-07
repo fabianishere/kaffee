@@ -1,45 +1,15 @@
-# Copyright (c) 2012 Fabian M.
-# See the AUTHORS file for all contributors of the Kaffee project.
 Path = require 'path'
 
 Goal = require './goal'
 Request = require '../execution/request'
 Result = require '../execution/result'
 EventManager = require '../event/manager'
-
 ###
   A {@link Plugin} instance represents a Kaffee plugin.
 
-  @version 0.3.0
   @author Fabian M. <mail.fabianm@gmail.com>
 ###
 class Plugin
-
-	###
-	  The name of this {@link Plugin}.
-	###
-	name: ""
-
-	###
-	  The {@link Goals} of this {@link Plugin}.
-	###
-	goals: []
-
-	###
-	  The {@link Project} instance of this {@link Goal}.
-	###
-	project: null
-
-	###
-	  The configuration of this {@link Plugin}.
-	###
-	configuration: null
-
-	###
-	  The {@link EventManager} of this {@link Plugin}.
-	###
-	event: null
-	
 	###
 	  Constructs a new {@link Plugin} instance.
 
@@ -48,15 +18,9 @@ class Plugin
 	  @param project The {@link Project} of this {@link Plugin}.
 	  @param configuration The configuration of this {@link Plugin}.
 	###
-	constructor: (name, project, configuration = {}) ->
-		throw "IllegalArgumentException" if not name or not project
+	constructor: (@name, @project, @configuration = {}) ->
 		this.goals = []
-			
-		this.name = name
-		this.project = project
-		this.configuration = configuration
-		this.event = new EventManager "plugin-" + this.name, project.getEventManager(), this
-		this.logger = this.event.getLogger()
+		this.event = new EventManager "plugin-#{ this.name }", project.getEventManager(), this
 
 	###
 	  Loads this plugin.
@@ -65,16 +29,17 @@ class Plugin
 	###
 	load: ->
 		this.event.fire "enter", this
+		this.logger = this.getLogger()
 		try
 			# Modify path.
-			module.paths.push Path.join this.project.getConfiguration().getWorkspace().getPath(), "node_modules"
-			module.paths = process.mainModule.paths.concat module.paths
+			module.paths = process.mainModule.paths.concat module.paths, [Path.join this.project.getConfiguration().getWorkspace().getPath(), "node_modules"]
 			obj = require this.name
-			throw "Plugin " + name + " is invalid." if typeof obj != 'function' 
-			obj.apply this, [this.configuration]
+			throw "Plugin " + this.name + " is invalid." if typeof obj != 'function' 
+			obj.call this, this.configuration
 		catch e
 			this.event.getLogger().error e
 			return
+		this.logger = undefined
 		this.event.fire "leave", this
 		true
 		
@@ -94,7 +59,7 @@ class Plugin
 	  @return The {@link Project} of this {@link Plugin}.
 	###
 	getProject: -> this.project
-
+	
 	###
 	  Returns the configuration of this {@link Plugin}.
 	  
@@ -118,7 +83,15 @@ class Plugin
 	  @return The {@link EventManager} of this {@link Plugin}.
 	###
 	getEventManager: -> this.event
-		
+	
+	###
+	  Returns the logging object of this {@link Plugin}.
+	  
+	  @since 0.3.1
+	  @return The logging object of this {@link Plugin}.
+	###
+	getLogger: -> this.getEventManager().getLogger()
+
 	###
 	  Returns a {@link Goal} of this {@link Plugin}.
 	  
@@ -126,10 +99,7 @@ class Plugin
 	  @param name The name of the goal to get.
 	  @return The {@link Goal}.
 	###
-	getGoal: (name) ->
-		for goal in this.goals
-			return goal if goal.getName() == name
-		false
+	getGoal: (name) -> return goal for goal in this.goals when goal.getName() is name
 		
 	###
 	  Determines if this {@link Project} has a {@link Plugin}.
@@ -138,22 +108,14 @@ class Plugin
 	  @param name The name of the {@link Goal}.
 	###
 	hasGoal: (name) -> !!this.getGoal name
-
-	###
-	  Adds a {@link Goal} to this {@link Plugin}.
-
-	  @since 0.2.1
-	  @param goal The goal to add.
-	###
-	addGoal: (goal) -> this.goals.push(goal) if goal instanceof Goal
 		
 	###
 	  Registers a goal.
 	  
 	  @since 0.3.0
 	  @param name The name of the goal to register.
-	  @param func The function of this goal.
+	  @param call The function of this goal.
 	###
-	register: (name, func) -> this.addGoal new Goal(this, name, func)
+	register: (name, call) -> this.goals.push new Goal(this, name, call)
 	
 module.exports = Plugin
