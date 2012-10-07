@@ -10,7 +10,7 @@ Configuration = require '../configuration'
 ###
   The {@link Project} class represents a Kaffee project.
 
-  @version 0.1.1
+  @version 0.3.0
   @author Fabian M. <mail.fabianm@gmail.com>
 ###
 class Project

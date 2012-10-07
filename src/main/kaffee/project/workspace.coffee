@@ -6,7 +6,7 @@ Path = require 'path'
 ###
   The {@link Workspace} class is a pointer to the workspace of a {@link Project}
 
-  @version 0.1.1
+  @version 0.3.0
   @author Fabian M. <mail.fabianm@gmail.com>
 ###
 class Workspace

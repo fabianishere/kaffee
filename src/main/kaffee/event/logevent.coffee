@@ -4,7 +4,7 @@
 ###
   A {@link LogEvent} instance represents a Kaffee log message.
 
-  @version 0.2.1
+  @version 0.3.0
   @author Fabian M. <mail.fabianm@gmail.com>
 ###
 class LogEvent

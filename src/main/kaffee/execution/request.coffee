@@ -4,7 +4,7 @@
 ###
   The {@link ExecutionRequest} class is a request to execute one or multiple goals.
 
-  @version 0.2.1
+  @version 0.3.0
   @author Fabian M. <mail.fabianm@gmail.com>
 ###
 class ExecutionRequest

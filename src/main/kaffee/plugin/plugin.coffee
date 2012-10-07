@@ -10,7 +10,7 @@ EventManager = require '../event/manager'
 ###
   A {@link Plugin} instance represents a Kaffee plugin.
 
-  @version 0.2.1
+  @version 0.3.0
   @author Fabian M. <mail.fabianm@gmail.com>
 ###
 class Plugin

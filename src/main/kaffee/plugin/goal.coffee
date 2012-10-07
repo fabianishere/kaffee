@@ -5,7 +5,7 @@ Result = require '../execution/result'
 ###
   A {@link Goal} instance represents a Kaffee goal.
 
-  @version 0.2.1
+  @version 0.3.0
   @author Fabian M. <mail.fabianm@gmail.com>
 ###
 class Goal
