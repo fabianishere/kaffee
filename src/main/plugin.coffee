@@ -50,7 +50,7 @@ module.exports = ->
 			try 
 				stats = Fs.lstatSync file
 				if stats.isDirectory()
-					test.call this, file
+					ok = test.call this, file
 					continue
 				CoffeeScript.compile Fs.readFileSync(file, 'UTF-8') if Path.extname(file) is ".coffee"
 			catch e
