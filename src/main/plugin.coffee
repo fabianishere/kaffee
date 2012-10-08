@@ -101,6 +101,7 @@ module.exports = ->
 		structure = this.getProject().getConfiguration().getKaffeeConfiguration().getStructure()
 		return this.logger.warn "No structure" unless structure
 		this.logger.info "Testing files for project #{ this.getProject().getConfiguration().getName() }"
-		ok = not (not test.call(this, structure.get('src')) or not test.call(this, structure.get('src-test')))
+		ok = not test.call this, structure.get('src')
+		ok = not test.call this, structure.get('src-test')
 		if ok then this.logger.info "Test passed!" else this.logger.warn "Test failed!"
 		
