@@ -50,13 +50,13 @@ module.exports = ->
 			try 
 				stats = Fs.lstatSync file
 				if stats.isDirectory()
-					ok = test.call this, file
+					ok = false unless test.call this, file
 					continue
 				CoffeeScript.compile Fs.readFileSync(file, 'UTF-8') if Path.extname(file) is ".coffee"
 			catch e
-				ok = false
 				e.message += " in #{ file }"
 				this.logger.error e
+				return false
 		ok
 		
 	###
@@ -101,6 +101,6 @@ module.exports = ->
 		structure = this.getProject().getConfiguration().getKaffeeConfiguration().getStructure()
 		return this.logger.warn "No structure" unless structure
 		this.logger.info "Testing files for project #{ this.getProject().getConfiguration().getName() }"
-		ok = test.call this, structure.get('src') and test.call this, structure.get('src-test')
+		ok = test.call(this, structure.get('src')) and test.call(this, structure.get('src-test'))
 		if ok then this.logger.info "Test passed!" else this.logger.warn "Test failed!"
 		
