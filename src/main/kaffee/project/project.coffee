@@ -50,10 +50,13 @@ class Project
 				project = new Project new ProjectConfiguration(workspace), this
 				project.load()
 				this.childs.push project
+			# Add the `kaffee-plugin` to this project.
+			this.plugins.push new (require "../plugin/default")(this)
+			
 			for name, configuration of this.configuration.getKaffeeConfiguration().getPlugins()
 					plugin = new Plugin name, this, configuration
 					return unless plugin.load()
-					this.plugins.push plugin 
+					this.plugins.push plugin
 		catch e
 			this.event.getLogger().error e
 			return

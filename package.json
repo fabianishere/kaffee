@@ -1,7 +1,7 @@
 {
 	"name": "kaffee",
 	"description": "Kaffee is a software project management tool similar to Maven and is written in Coffeescript. Kaffee allows you to compile, test, minify and many other tasks to make building your application simple and fun again.",
-	"version": "0.3.1",
+	"version": "0.3.2",
 	"author": "Fabian M. <mail.fabianm@gmail.com> (https://www.github.com/FabianM)",
 	"homepage": "http://github.com/FabianM/kaffee",
 	"repository": {
@@ -17,7 +17,7 @@
 			"url": "http://github.com/FabianM/kaffee/blob/master/LICENSE"
 		}
 	],
-	"main": "lib/main/kaffee/kaffee.js",
+	"main": "lib/main/kaffee/kaffee",
 	"scripts": {
 	},
 	"engines": {

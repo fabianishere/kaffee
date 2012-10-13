@@ -6,7 +6,7 @@
 ###
 class Configuration
 	@NAME: "Kaffee"
-	@VERSION: "0.3.0"
+	@VERSION: "0.3.2"
 	
 	###
 	  Merges two objects into one.
@@ -66,7 +66,7 @@ class Configuration
 				"test" : []
 				"deploy" : []
 				"package" : []
-				"clean" : []
+				"clean" : ["kaffee-plugin:clean"]
 			
 			###
 			  Parent project.

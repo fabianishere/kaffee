@@ -19,8 +19,8 @@ class Plugin
 	  @param configuration The configuration of this {@link Plugin}.
 	###
 	constructor: (@name, @project, @configuration = {}) ->
-		this.goals = []
-		this.event = new EventManager "plugin-#{ this.name }", project.getEventManager(), this
+		@goals = []
+		@event = new EventManager "plugin-#{ @name }", project.getEventManager(), this
 
 	###
 	  Loads this plugin.
@@ -28,19 +28,19 @@ class Plugin
 	  @since 0.3.0
 	###
 	load: ->
-		this.event.fire "enter", this
-		this.logger = this.getLogger()
+		@event.fire "enter", this
+		@logger = @getLogger()
 		try
 			# Modify path.
-			module.paths = process.mainModule.paths.concat module.paths, [Path.join this.project.getConfiguration().getWorkspace().getPath(), "node_modules"]
-			obj = require this.name
-			throw "Plugin " + this.name + " is invalid." if typeof obj != 'function' 
-			obj.call this, this.configuration
+			module.paths = process.mainModule.paths.concat module.paths, [Path.join @project.getConfiguration().getWorkspace().getPath(), "node_modules"]
+			obj = require @name
+			throw "Plugin " + @name + " is invalid." if typeof obj != 'function' 
+			obj.call this, @configuration
 		catch e
-			this.event.getLogger().error e
+			@event.getLogger().error e
 			return
-		this.logger = undefined
-		this.event.fire "leave", this
+		@logger = undefined
+		@event.fire "leave", this
 		true
 		
 
@@ -50,7 +50,7 @@ class Plugin
 	  @since 0.2.1
 	  @return The name of this {@link Plugin}.
 	###
-	getName: -> this.name
+	getName: -> @name
 
 	###
 	  Returns the {@link Project} of this {@link Plugin}.
@@ -58,7 +58,7 @@ class Plugin
 	  @since 0.2.1
 	  @return The {@link Project} of this {@link Plugin}.
 	###
-	getProject: -> this.project
+	getProject: -> @project
 	
 	###
 	  Returns the configuration of this {@link Plugin}.
@@ -66,7 +66,7 @@ class Plugin
 	  @since 0.2.1
 	  @return The configuration of this {@link Plugin}.
 	###
-	getConfiguration: -> this.configuration
+	getConfiguration: -> @configuration
 
 	###
 	  Returns the {@link Goal}s of this {@link Plugin}.
@@ -74,7 +74,7 @@ class Plugin
 	  @since 0.2.1
 	  @return The {@link Goal}s of this {@link Plugin}.
 	###
-	getGoals: -> this.goals
+	getGoals: -> @goals
 
 	###
 	  Returns the {@link EventManager} of this {@link Plugin}.
@@ -82,7 +82,7 @@ class Plugin
 	  @since 0.3.0
 	  @return The {@link EventManager} of this {@link Plugin}.
 	###
-	getEventManager: -> this.event
+	getEventManager: -> @event
 	
 	###
 	  Returns the logging object of this {@link Plugin}.
@@ -90,7 +90,7 @@ class Plugin
 	  @since 0.3.1
 	  @return The logging object of this {@link Plugin}.
 	###
-	getLogger: -> this.getEventManager().getLogger()
+	getLogger: -> @getEventManager().getLogger()
 
 	###
 	  Returns a {@link Goal} of this {@link Plugin}.
@@ -99,7 +99,7 @@ class Plugin
 	  @param name The name of the goal to get.
 	  @return The {@link Goal}.
 	###
-	getGoal: (name) -> return goal for goal in this.goals when goal.getName() is name
+	getGoal: (name) -> return goal for goal in @goals when goal.getName() is name
 		
 	###
 	  Determines if this {@link Project} has a {@link Plugin}.
@@ -107,7 +107,7 @@ class Plugin
 	  @since 0.2.1
 	  @param name The name of the {@link Goal}.
 	###
-	hasGoal: (name) -> !!this.getGoal name
+	hasGoal: (name) -> !!@getGoal name
 		
 	###
 	  Registers a goal.
@@ -116,6 +116,6 @@ class Plugin
 	  @param name The name of the goal to register.
 	  @param call The function of this goal.
 	###
-	register: (name, call) -> this.goals.push new Goal(this, name, call)
+	register: (name, call) -> @goals.push new Goal(this, name, call)
 	
 module.exports = Plugin
