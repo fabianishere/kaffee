@@ -72,23 +72,30 @@ module.exports = ->
 		files = getFiles path
 		mkdir output unless Fs.existsSync(output) and files.length > 0
 		for file, i in getFiles(path)
-			try 	
-				this.logger.info file
+			try
 				stats = Fs.lstatSync file
 				compile.call this, file, Path.join(output, Path.basename(file)) if stats.isDirectory()
 				if Path.extname(file) is ".coffee"
+					this.logger.info file
 					fd = Fs.openSync Path.join(output, Path.basename(file, ".coffee") + ".js"), "w"					
 					out = CoffeeScript.compile Fs.readFileSync(file, 'UTF-8')
 					Fs.writeSync fd, out, 0, out.length
+					Fs.closeSync fd
+				else if Path.basename(file) is "package.json"
+					this.logger.info file
+					fd = Fs.openSync Path.join(output, Path.basename(file)), "w"
+					out = Fs.readFileSync file, 'UTF-8'
+					Fs.writeSync fd, out, 0, out.length
+					Fs.closeSync fd		
 			catch e
 				e.message += " in #{ file }"
 				this.logger.error e
-			
-
+				
 	###
 	  Compiles Coffeescript files into Javascript files.
 	###
-	this.register "compile", ->
+	this.register "compile", (request) ->
+		this.dependsOn "clean", request
 		structure = this.getProject().getConfiguration().getKaffeeConfiguration().getStructure()
 		return this.logger.warn "No structure" unless structure
 		this.logger.info "Compiling files for project #{ this.getProject().getConfiguration().getName() }"
