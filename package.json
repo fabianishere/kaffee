@@ -17,7 +17,7 @@
 			"url": "http://github.com/FabianM/kaffee/blob/master/LICENSE"
 		}
 	],
-	"main" : "lib/main/kaffee/cli.js",
+	"main" : "lib/main/kaffee/cli",
 	"directories" : {
 		"src" : "./src",
 		"lib" : "./lib/main/kaffee",
