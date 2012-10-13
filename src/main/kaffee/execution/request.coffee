@@ -21,8 +21,8 @@ class ExecutionRequest
 	###
 	addGoal: (goal) ->
 		return if not goal
-		this.goals.push goal if typeof goal is 'string'
-		this.goals.concat goal if typeof goal is 'array'
+		@goals.push goal if typeof goal is 'string'
+		@goals.concat goal if typeof goal is 'array'
 
 	###
 	  Returns the goals of this {@link ExecutionRequest}.
@@ -30,7 +30,7 @@ class ExecutionRequest
 	  @since 0.2.1
 	  @return The goals of this {@link ExecutionRequest}.
 	###
-	getGoals: -> this.goals
+	getGoals: -> @goals
 
 	###
 	  Sets the force field of this {@link ExecutionRequest}.
@@ -46,5 +46,5 @@ class ExecutionRequest
 	  @since 0.2.1
 	  @return <code>true</code> if Kaffee is forced, <code>false</code> otherwise.
 	###
-	isForced: -> this.force
+	isForced: -> @force
 module.exports = ExecutionRequest

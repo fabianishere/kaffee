@@ -13,8 +13,8 @@ class Result
 	  @param parent The parent {@link Result} of this {@link Result}.
 	###
 	constructor: (@project) ->
-		this.childs = []
-		this.logs = []
+		@childs = []
+		@logs = []
 		
 	###
 	  Returns the {@link LogEvent}s of this {@link Result} instance.
@@ -22,7 +22,7 @@ class Result
 	  @since 0.3.0
 	  @return The {@link LogEvent}s of this {@link Result} instance.
 	###
-	getLogs: -> this.logs
+	getLogs: -> @logs
 
 	###
 	  Returns the {@link Project} of this {@link ProjectResult} instance.
@@ -30,7 +30,7 @@ class Result
 	  @since 0.2.1
 	  @return The {@link Project} of this {@link ProjectResult} instance.
 	###
-	getProject: -> this.project
+	getProject: -> @project
 	
 	###
 	  Adds a child {@link Result} to this {@link Result} instance.
@@ -39,9 +39,9 @@ class Result
 	  @param child The {@link Result} to add.
 	###
 	addChild: (child) ->
-		return this.childs if not child
-		return this.childs.push child if child instanceof Result
-		return this.childs = this.childs.concat child
+		return @childs if not child
+		return @childs.push child if child instanceof Result
+		return @childs = @childs.concat child
 
 	###
 	  Returns the child {@link Result}s of this {@link Result} instance.
@@ -49,7 +49,7 @@ class Result
 	  @since 0.2.1
 	  @return The child {@link Result}s of this {@link Result} instance.
 	###
-	getChilds: -> this.childs
+	getChilds: -> @childs
 
 	###
 	  Sets the result message of this {@link Result} instance.
@@ -65,6 +65,6 @@ class Result
 	  @since 0.2.1
 	  @return The result message of this {@link Result} instance.
 	###
-	getMessage: -> this.message
+	getMessage: -> @message
 module.exports = Result
 		

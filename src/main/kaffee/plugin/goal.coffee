@@ -14,7 +14,7 @@ class Goal
 	  @param name The name of this {@link Goal}.
 	  @param call The function of this {@link Goal}.
 	###
-	constructor: (@plugin, @name, @call) -> this.event = new EventManager "goal-#{ name }", plugin.getEventManager(), this
+	constructor: (@plugin, @name, @call) -> @event = new EventManager "goal-#{ name }", plugin.getEventManager(), this
 		
 	###
 	  Returns the {@link Project} of this {@link Goal}.
@@ -22,7 +22,7 @@ class Goal
 	  @since 0.3.0
 	  @return The {@link Project} of this {@link Goal}.
 	###
-	getProject: -> this.getPlugin().getProject()
+	getProject: -> @getPlugin().getProject()
 	
 	###
 	  Returns the name of this {@link Goal}.
@@ -30,7 +30,7 @@ class Goal
 	  @since 0.2.1
 	  @return The name of this {@link Goal}.	
 	###
-	getName: -> this.name
+	getName: -> @name
 
 	###
 	  Returns the {@link Plugin} of this {@link Goal}.
@@ -38,7 +38,7 @@ class Goal
 	  @since 0.2.1
 	  @return The {@link Plugin} of this {@link Goal}.
 	###
-	getPlugin: -> this.plugin
+	getPlugin: -> @plugin
 
 	###
 	  Returns the {@link EventManager} of this {@link Goal}.
@@ -46,7 +46,7 @@ class Goal
 	  @since 0.3.0
 	  @return The {@link EventManager} of this {@link Goal}.
 	###
-	getEventManager: -> this.event
+	getEventManager: -> @event
 
 	###
 	  Returns the logging object of this {@link Goal}.
@@ -54,7 +54,7 @@ class Goal
 	  @since 0.3.1
 	  @return The logging object of this {@link Goal}.
 	###
-	getLogger: -> this.getEventManager().getLogger()
+	getLogger: -> @getEventManager().getLogger()
 		
 	###
 	  The {@link #dependsOn} methods should be called if 
@@ -68,7 +68,7 @@ class Goal
 	dependsOn: (name, request) ->
 		return unless name
 		return name.attain? request
-		this.getPlugin().getProject().attainGoal name, request
+		@getPlugin().getProject().attainGoal name, request
 	
 	###
 	  Attains this {@link Goal}.
@@ -78,17 +78,18 @@ class Goal
 	  @return The result.
 	###
 	attain: (request) -> 
-		result = new Result this.getProject()
-		this.event.fire "attain", this
-		this.event.on "*log", (log) -> result.getLogs().push log
-		this.logger = this.getLogger()
+		result = new Result @getProject()
+		@event.fire "attain", this
+		@event.on "*log", (log) -> result.getLogs().push log
+		@logger = @getLogger()
 		try
-			throw new Error "Invalid Goal" unless this.call
-			result.setMessage this.call.call(this, request)
+			throw new Error "Invalid Goal" unless @call
+			result.setMessage @call.call(this, request)
 			
 		catch e
-			this.getLogger().error e
-		this.logger = undefined
-		this.event.fire "attained", this, result
+			@getLogger().error e
+		result.time = Date.now()
+		@logger = undefined
+		@event.fire "attained", this, result
 		result
 module.exports = Goal

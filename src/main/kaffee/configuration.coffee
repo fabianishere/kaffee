@@ -6,29 +6,7 @@
 ###
 class Configuration
 	@NAME: "Kaffee"
-	@VERSION: "0.3.2"
-	
-	###
-	  Merges two objects into one.
-	  
-	  @since 0.3.0
-	  @param o Original object.
-	  @param a The object to merge it with.
-	  @return The result.
-	###
-	@merge = (o, a) -> 
-			r = []
-			for key, value of o
-				r[key] = value
-			return r if typeof o != 'object' || typeof a != 'object'
-			for key, value of a
-				if typeof o[key] == 'object'
-					r[key] = @merge(o[key], value)	
-				else if typeof o[key] == 'array'
-					r[key] = o[key].concat value
-				else 
-					r[key] = value
-			r
+	@VERSION: "0.3.3"
 			
 	###
 	  Default filename of the project configuration file.
@@ -74,22 +52,8 @@ class Configuration
 			parent: ""
 			
 			###
-			  Childs of this project.
+			  Child projects of this project.
 			###
 			modules: []
-
-	###
-	  Currently available archtypes.
-	###
-	@ARCHTYPES: 
-		"default": @SUPER_PROJECT_CONFIG
-		"kaffee-coffeemaker": @merge(@SUPER_PROJECT_CONFIG, {
-			kaffee: 
-				plugins: 
-					"kaffee-coffeemaker" : {}
-				lifecycles: 
-					"compile" : ["kaffee-coffeemaker:compile"]
-					"test" : ["kaffee-coffeemaker:test"]
-		})
 
 module.exports = Configuration;

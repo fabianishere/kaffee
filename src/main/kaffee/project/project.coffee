@@ -1,10 +1,12 @@
-ProjectConfiguration = require './configuration'
-Workspace = require './workspace'
-Plugin = require '../plugin/plugin'
-EventManager = require '../event/manager'
-Result = require '../execution/result'
-Request = require '../execution/request'
-Configuration = require '../configuration'
+ProjectConfiguration = require "./configuration"
+Workspace = require "./workspace"
+Plugin = require "../plugin/plugin"
+EventManager = require "../event/manager"
+Result = require "../execution/result"
+Request = require "../execution/request"
+Configuration = require "../configuration"
+Util = require "../util"
+
 ###
   The {@link Project} class represents a Kaffee project.
 
@@ -20,12 +22,12 @@ class Project
 	  @param parent The parent {@link Project} of this {@link Project}.
 	###
 	constructor: (@configuration, @parent) ->	
-		this.plugins = []
-		this.childs = []
+		@plugins = []
+		@childs = []
 		
-		this.event = new EventManager "project", null, this
-		this.event.setParent parent?.getEventManager()
-		this.event.setName "project-" + this.configuration.getName()
+		@event = new EventManager "project", null, this
+		@event.setParent parent?.getEventManager()
+		@event.setName "project-" + @configuration.getName()
 		
 	###
 	  Returns the parent {@link Project} instance.
@@ -33,7 +35,7 @@ class Project
 	  @since 0.3.0
 	  @return The parent {@link Project} instance.
 	###
-	getParent: -> this.parent
+	getParent: -> @parent
 
 	###
 	  Loads this {@link Project}.
@@ -41,26 +43,33 @@ class Project
 	  @since 0.2.1
 	###
 	load: ->
-		this.event.fire "enter", this
+		@event.fire "enter", this
 		try
-			for child in this.configuration.getKaffeeConfiguration().getModules()
+			for child in @configuration.getKaffeeConfiguration().getModules()
 				continue if typeof child isnt 'string'
 				workspace = new Workspace child
-				continue if workspace.getPath() is this.configuration.getWorkspace().getPath()
+				continue if workspace.getPath() is @configuration.getWorkspace().getPath()
 				project = new Project new ProjectConfiguration(workspace), this
 				project.load()
-				this.childs.push project
+				@childs.push project
 			# Add the `kaffee-plugin` to this project.
-			this.plugins.push new (require "../plugin/default")(this)
+			@plugins.push new (require "../plugin/default")(this)
 			
-			for name, configuration of this.configuration.getKaffeeConfiguration().getPlugins()
+			for name, configuration of @configuration.getKaffeeConfiguration().getPlugins()
 					plugin = new Plugin name, this, configuration
 					return unless plugin.load()
-					this.plugins.push plugin
+					@plugins.push plugin
+					
+			archtype = @configuration.getKaffeeConfiguration().getArchtype()
+			plugin = @getPlugin archtype
+			if plugin and plugin.hasArchtype()
+				@configuration.data = Util.merge plugin.getArchtype(), @configuration.data
+			else if archtype # Archtype is given, but it doesn't exists.
+				throw "Invalid archtype \"#{ archtype }\""
 		catch e
-			this.event.getLogger().error e
+			@event.getLogger().error e
 			return
-		this.event.fire "leave", this
+		@event.fire "leave", this
 		true
 
 	###
@@ -69,7 +78,7 @@ class Project
 	  @since 0.3.0
 	  @return The {@link EventManager} of this {@link Project}.
 	###
-	getEventManager: -> this.event
+	getEventManager: -> @event
 
 	###
 	  Returns the {@link ProjectConfiguration} of this {@link Project}.
@@ -77,14 +86,14 @@ class Project
 	  @since 0.2.1
 	  @return The {@link ProjectConfiguration} of this {@link Project}.
 	###
-	getConfiguration: -> this.configuration
+	getConfiguration: -> @configuration
 
 	###
 	  Returns the {@link Plugin}s of this {@link Project}.
 	  @since 0.2.1
 	  @return The {@link Plugin}s of this {@link Project}.
 	###
-	getPlugins: -> if this.getParent() then this.plugins.concat this.getParent().getPlugins() else this.plugins
+	getPlugins: -> if @getParent() then @plugins.concat @getParent().getPlugins() else @plugins
 		
 	###
 	  Returns a {@link Plugin} of this {@link Project}.
@@ -93,7 +102,8 @@ class Project
 	  @param name The name of the {@link Plugin} to get.
 	  @return The {@link Plugin}.
 	###
-	getPlugin: (name) -> return plugin for plugin in this.getPlugins() when plugin.getName() is name
+	getPlugin: (name) -> 
+		return plugin for plugin in @getPlugins() when plugin.getName() is name or plugin.getAliases().indexOf(name) isnt -1
 			
 	###
 	  Determines if this {@link Plugin} has a {@link Goal}.
@@ -101,7 +111,7 @@ class Project
 	  @since 0.2.1
 	  @param name The name of the {@link Plugin}.
 	###
-	hasPlugin: (name) -> !!this.getPlugin name
+	hasPlugin: (name) -> !!@getPlugin name
 	
 	###
 	  Returns the lifecycles of this {@link Plugin}.
@@ -110,21 +120,18 @@ class Project
 	  @return The lifecycles of this {@link Plugin}.
 	###
 	getLifecycles: -> 
-		c = this.getParent()?.getLifecycles()?.slice(0)
+		c = @getParent()?.getLifecycles()?.slice(0)
 		c or= []
-		for key, value of this.getConfiguration().getKaffeeConfiguration().getLifecycles()
+		for key, value of @getConfiguration().getKaffeeConfiguration().getLifecycles()
 			c[key] = value
 		c
-			
-			
-		
 	###
 	  Returns the child {@link Project}s of this {@link Project}.
 
 	  @since 0.3.0
 	  @return The child {@link Project}s of this {@link Project}.
 	###
-	getChilds: -> this.childs
+	getChilds: -> @childs
 
 	###
 	  Executes a {@link ExecutionRequest}.
@@ -134,13 +141,16 @@ class Project
 	  @return The {@link ExecutionResult} instance.
 	###
 	execute: (request) ->
+		request.time = Date.now()
 		result = new Result this
 		try 
-			result.addChild this.attainGoal(goal) for goal in request.getGoals()
-			result.addChild child.execute(request) for child in this.childs
+			result.addChild @attainGoal(goal) for goal in request.getGoals()
+			result.addChild child.execute(request) for child in @childs
 		catch e
-			this.event.getLogger().error e
+			@event.getLogger().error e
 			return
+		result.time = Date.now()
+		result
 	
 	###
 	  Attains a {@link Goal}.
@@ -156,17 +166,17 @@ class Project
 			split = name.split(':')
 			plugin = split[0]
 			goal = split[1]
-			if not this.hasPlugin plugin
-				this.event.getLogger().error "No such plugin \"#{ plugin }\""
+			if not @hasPlugin plugin
+				@event.getLogger().error "No such plugin \"#{ plugin }\""
 				return
-			if not this.getPlugin(plugin).hasGoal goal
-				this.event.getLogger().error "Plugin #{ plugin } doesn't have goal \"#{ goal }\""
+			if not @getPlugin(plugin).hasGoal goal
+				@event.getLogger().error "Plugin #{ plugin } doesn't have goal \"#{ goal }\""
 				return
-			return this.getPlugin(plugin).getGoal(goal).attain request
-		lifecycle = this.getLifecycles()[name]
+			return @getPlugin(plugin).getGoal(goal).attain request
+		lifecycle = @getLifecycles()[name]
 		if not lifecycle
-			this.event.getLogger().error "Unknown lifecycle \"#{ name }\""
+			@event.getLogger().error "Unknown lifecycle \"#{ name }\""
 			return
-		this.attainGoal goal for goal in lifecycle when goal isnt name
+		@attainGoal goal for goal in lifecycle when goal isnt name
 
 module.exports = Project	

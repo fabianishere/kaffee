@@ -33,8 +33,8 @@ class Plugin
 		try
 			# Modify path.
 			module.paths = process.mainModule.paths.concat module.paths, [Path.join @project.getConfiguration().getWorkspace().getPath(), "node_modules"]
-			obj = require @name
-			throw "Plugin " + @name + " is invalid." if typeof obj != 'function' 
+			obj = require @getModule()
+			throw "Module #{ @getModule() } isn't a valid module." if typeof obj isnt 'function' 
 			obj.call this, @configuration
 		catch e
 			@event.getLogger().error e
@@ -43,6 +43,21 @@ class Plugin
 		@event.fire "leave", this
 		true
 		
+	###
+	  Returns the name of the module of this {@link Plugin}.
+	  
+	  @since 0.3.3
+	  @return The name of the module of this {@link Plugin}.
+	###
+	getModule: -> @configuration.module or @name
+	
+	###
+	  Returns the aliases of this {@link Plugin}.
+	  
+	  @since 0.3.3
+	  @return The aliases of this {@link Plugin}.
+	###
+	getAliases: -> @configuration.alias or []
 
 	###
 	  Returns the name of this {@link Plugin}.
@@ -102,12 +117,37 @@ class Plugin
 	getGoal: (name) -> return goal for goal in @goals when goal.getName() is name
 		
 	###
-	  Determines if this {@link Project} has a {@link Plugin}.
+	  Determines if this {@link Plugin} has a {@link Goal}.
 	
 	  @since 0.2.1
 	  @param name The name of the {@link Goal}.
+	  @return <code>true</code> if this {@link Plugin} has this {@link Goal}, <code>false</code> otherwise.
 	###
 	hasGoal: (name) -> !!@getGoal name
+	
+	###
+	  Determines if this {@link Plugin} has defined an archtype.
+	  
+	  @since 0.3.3
+	  @return <code>true</code> if this {@link Plugin} has defined an archtype, <code>false</code> otherwise.
+	###
+	hasArchtype: -> !!@archtype
+	
+	###
+	  Returns the archtype of this {@link Plugin}.
+	  
+	  @since 0.3.3
+	  @return The archtype of this {@link Plugin} if it has one.
+	###
+	getArchtype: -> @archtype
+	
+	###
+	  Defines an archtype.
+	  
+	  @since 0.3.3
+	  @param archtype The archtype to define.
+	###
+	archtype: (archtype) -> @archtype = archtype if typeof archtype is 'object'
 		
 	###
 	  Registers a goal.

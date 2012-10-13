@@ -1,5 +1,5 @@
-Fs = require 'fs'
-Path = require 'path'
+Fs = require "fs"
+Path = require "path"
 
 ###
   The {@link Workspace} class is a pointer to the workspace of a {@link Project}
@@ -14,7 +14,7 @@ class Workspace
 	  @since 0.1.1
 	  @param path The path pointing to the workspace.
 	###
-	constructor: (path = ".") -> this.path = Path.resolve path
+	constructor: (path = ".") -> @path = Path.resolve path
 
 	###
 	  Returns the path pointing to the workspace.
@@ -22,7 +22,7 @@ class Workspace
 	  @since 0.1.1
 	  @return The path pointing to the workspace.
 	###
-	getPath: -> this.path
+	getPath: -> @path
 
 	###
 	  Determines if this workspace exists or not.
@@ -30,12 +30,12 @@ class Workspace
 	  @since 0.1.1
 	  @return <code>true</code> if this workspace exists, <code>false</code> otherwise.
 	###
-	exists: -> Fs.existsSync this.path
+	exists: -> Fs.existsSync @path
 
 	###
 	  Creates this workspace.
 	
 	  @since 0.1.1
 	###
-	create: -> Fs.mkdirSync this.path
+	create: -> Fs.mkdirSync @path
 module.exports = Workspace
