@@ -1,4 +1,4 @@
-[Kaffee](http://fabianm.github.com/kaffee)
+Kaffee
 ===========================================
 Kaffee is a software project management tool similar to Maven and is written in Coffeescript.
 Kaffee allows you to compile, test, minify and many other tasks to make building your application simple and fun again.
