@@ -6,10 +6,10 @@
 	"homepage": "http://github.com/FabianM/kaffee",
 	"repository": {
 		"type": "git",
-		"url": "git://github.com/FabianM/kaffee"
+		"url": "git://github.com/FabianM/kaffee-cli"
 	},
 	"bugs": {
-		"url" : "http://github.com/FabianM/kaffee/issues"
+		"url" : "http://github.com/FabianM/kaffee-cli/issues"
 	},
 	"licenses": [
 		{
