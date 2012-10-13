@@ -111,3 +111,14 @@ module.exports = ->
 		ok = test.call(this, structure.get('src')) and test.call(this, structure.get('src-test'))
 		if ok then this.logger.info "Test passed!" else this.logger.warn "Test failed!"
 		
+	###
+	  Registers the archtype.
+	###
+	this.archtype 
+		kaffee: 
+			plugins: 
+				"kaffee-coffeemaker" : {}
+			lifecycles: 
+				"compile" : ["kaffee-coffeemaker:compile"]
+				"test" : ["kaffee-coffeemaker:test"]
+		
