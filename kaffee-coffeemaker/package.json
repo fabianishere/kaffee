@@ -1,0 +1,39 @@
+{
+	"name": "kaffee-coffeemaker",
+	"description": "The kaffee-coffeemaker plugin compiles Coffeescript files into Javascript.",
+	"version": "0.0.4",
+	"author": "Fabian M. <mail.fabianm@gmail.com> (https://www.github.com/FabianM)",
+	"homepage": "http://github.com/FabianM/kaffee-coffeemaker",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/FabianM/kaffee-coffeemaker"
+	},
+	"bugs": {
+		"url" : "http://github.com/FabianM/kaffee-coffeemaker/issues"
+	},
+	"licenses": [
+		{
+			"type": "Apache License, Version 2.0",
+			"url": "http://github.com/FabianM/kaffee/blob/master/LICENSE"
+		}
+  	],
+	"main": "lib/main/plugin",
+	"engines": {
+		"node": ">= 0.6.0" 
+	},
+	"keywords": [
+		"compiler",
+		"coffeescript",
+		"kaffee",
+		"kaffeeplugin"
+	],
+	"dependencies": {
+		"coffee-script" : "latest"
+	},
+	"kaffee" : {
+		"plugins" : {
+			"kaffee-coffeemaker": {}
+		},
+		"archtype" : "kaffee-coffeemaker"
+	}
+}
